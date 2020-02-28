@@ -14,6 +14,10 @@
 
 #### Key Mapping
 ```
+Left CTRL - Enable/Disable Auto-Shoot
+
+&& The following hotkey functions
+
 F10 - Preset Max Tollerance
 UP - Preset Medium Tollerance
 DOWN - Preset Low Tollerence
@@ -27,8 +31,6 @@ F1 - Target Aqua Blue
 F2 - Target Blue
 F3 - Target Red
 F4 - Target Red #2
-
-Left CTRL - Enable/Disable Auto-Shoot
 
 B - Deep Aim Only
 N - Neural Aim Only (trains Neural Net)
