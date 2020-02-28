@@ -396,70 +396,70 @@ int main()
             int phi = 0;
             int bhi = 0;
             int shots = 0;
-            for(int i = 0; i < 9; i++)
+            if(mode != 0)
             {
-                XQueryColor(d, map, &c[i]);
-
-                const unsigned short r = c[i].red;
-                const unsigned short g = c[i].green;
-                const unsigned short b = c[i].blue;
-                
-                //Center Pixel Target
-                if(key_is_pressed(XK_H) && i == 0)
+                for(int i = 0; i < 9; i++)
                 {
-                    tr = r;
-                    tg = g;
-                    tb = b;
-                    printf("\aH-SET: %i %i %i\n", tr, tg, tb);
-                }
-                
-                //Shoot if colour has locked on
-                int fire = 0;
+                    XQueryColor(d, map, &c[i]);
 
-                if(mode == 2)
-                    if(r > tr-tol && r < tr+tol && g > tg-tol && g < tg+tol && b > tb-tol && b < tb+tol)
-                        fire = 1;
-                
-                if(mode == 1)
-                {
-                    const double ghit = gPerceptron(r/65535, g/65535, b/65535, pw[i]);
-                    if(ghit > 0)
-                        fire = 1;
-                }
-
-                if(fire == 1)
-                {
-                    //Fire mouse down
-                    XSendEvent(d, PointerWindow, True, 0xfff, &event);
-                    XFlush(d);
+                    const unsigned short r = c[i].red;
+                    const unsigned short g = c[i].green;
+                    const unsigned short b = c[i].blue;
                     
-                    //Wait 100ms (or ban for suspected cheating)
-                    usleep(100000);
-                    
-                    //Release mouse down
-                    event.type = ButtonRelease;
-                    event.xbutton.state = 0x100;
-                    XSendEvent(d, PointerWindow, True, 0xfff, &event);
-                    XFlush(d);
-
-                    //printf("Colour Hit");
-
-                    //Train Perceptron
-                    const double nr = r/65535, ng = g/65535, nb = b/65535;
-                    const double hit = doPerceptron(nr, ng, nb, 1, pw[i]);
-                    if(hit > 0)
+                    //Center Pixel Target
+                    if(key_is_pressed(XK_H) && i == 0)
                     {
-                        //printf(", Perceptron Hit: %u, %lf", i, hit);
-                        phi++;
+                        tr = r;
+                        tg = g;
+                        tb = b;
+                        printf("\aH-SET: %i %i %i\n", tr, tg, tb);
+                    }
+                    
+                    //Shoot if colour has locked on
+                    int fire = 0;
+
+                    if(mode == 2)
+                        if(r > tr-tol && r < tr+tol && g > tg-tol && g < tg+tol && b > tb-tol && b < tb+tol)
+                            fire = 1;
+                    
+                    if(mode == 1)
+                    {
+                        const double ghit = gPerceptron(r/65535, g/65535, b/65535, pw[i]);
+                        if(ghit > 0)
+                            fire = 1;
                     }
 
-                    //printf("\n");	
+                    if(fire == 1)
+                    {
+                        //Fire mouse down
+                        XSendEvent(d, PointerWindow, True, 0xfff, &event);
+                        XFlush(d);
+                        
+                        //Wait 100ms (or ban for suspected cheating)
+                        usleep(100000);
+                        
+                        //Release mouse down
+                        event.type = ButtonRelease;
+                        event.xbutton.state = 0x100;
+                        XSendEvent(d, PointerWindow, True, 0xfff, &event);
+                        XFlush(d);
 
-                    shots++;
-                }
-                else
-                {
-                    if(mode != 0)
+                        //printf("Colour Hit");
+
+                        //Train Perceptron
+                        const double nr = r/65535, ng = g/65535, nb = b/65535;
+                        const double hit = doPerceptron(nr, ng, nb, 1, pw[i]);
+                        if(hit > 0)
+                        {
+                            //printf(", Perceptron Hit: %u, %lf", i, hit);
+                            phi++;
+                        }
+
+                        //printf("\n");	
+
+                        shots++;
+                    }
+                    else
                     {
                         const double hit = doPerceptron(r/65535, g/65535, b/65535, 0, pw[i]);
                         if(hit > 0)
@@ -469,7 +469,6 @@ int main()
                         }
                     }
                 }
-                
             }
 
             /*if(phi > 0)
