@@ -331,19 +331,19 @@ int main()
             if(key_is_pressed(XK_B))
             {
                 mode = 0;
-                printf("Deep Aim\n");
+                printf("\aDeep Aim\n");
                 sleep(1);
             }
             if(key_is_pressed(XK_N))
             {
                 mode = 1;
-                printf("Neural Aim\n");
+                printf("\aNeural Aim\n");
                 sleep(1);
             }
             if(key_is_pressed(XK_M))
             {
                 mode = 2;
-                printf("Colour Aim\n");
+                printf("\aColour Aim\n");
                 sleep(1);
             }
             
