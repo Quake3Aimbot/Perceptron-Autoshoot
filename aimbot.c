@@ -478,7 +478,7 @@ int main()
                 printf("Total bad: %u / 9\n", bhi);*/
 
             //Train DeepAim
-            if(mode == 2)
+            if(mode != 0)
             {
                 if(shots > 0)
                 {
