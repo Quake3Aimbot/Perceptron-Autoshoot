@@ -1,4 +1,4 @@
-## Quake3 Autoshoot
+## Quake3 Autoshoot - Using a Neural Net
 
 ### Notes
 - Tested using ioQuake3 ([https://ioquake3.org/](https://ioquake3.org/))
