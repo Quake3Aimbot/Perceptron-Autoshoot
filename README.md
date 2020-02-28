@@ -1,11 +1,13 @@
-## Notes
+## Quake3 Autoshoot
+
+### Notes
 - Tested using ioQuake3 ([https://ioquake3.org/](https://ioquake3.org/))
 - All modes continue to train the perceptrons apart from the DeepAim mode.
 
-## Linux Compile
+### Linux Compile
 ```gcc aimbot.c -Ofast -O3 -lX11 -lm -o aim```
 
-## Key Mapping
+### Key Mapping
 ```
 F10 - Preset Max Tollerance
 UP - Preset Medium Tollerance
@@ -27,7 +29,7 @@ N - Neural Aim Only (trains Neural Net)
 M - Colour Aim Only (trains Neural Net)
 ```
 
-## Preferred Client Settings:
+### Preferred Client Settings:
 ```
 cg_oldRail "1"
 cg_noProjectileTrail "1"
@@ -83,7 +85,7 @@ com_zoneMegs "24"
 com_hunkmegs "512"
 ```
 
-### Licence
+#### Licence
 Distributed under the MIT software license, see the accompanying
 file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
