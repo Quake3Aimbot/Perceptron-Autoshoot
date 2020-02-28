@@ -1,5 +1,6 @@
 ## Notes
-- Tested using ioQuake3 [(https://ioquake3.org/)](https://ioquake3.org/)
+- Tested using ioQuake3 ([https://ioquake3.org/](https://ioquake3.org/))
+- All modes continue to train the perceptrons apart from the DeepAim mode.
 
 ## Linux Compile
 ```gcc aimbot.c -Ofast -O3 -lX11 -lm -o aim```
@@ -59,3 +60,8 @@ cg_shadows "0"
 com_zoneMegs "24"
 com_hunkmegs "512"
 ```
+
+### Licence
+Distributed under the MIT software license, see the accompanying
+file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
