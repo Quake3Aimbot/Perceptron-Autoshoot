@@ -7,6 +7,7 @@
   although it may be desired to replace this with a better tone function.
 - Precompiled binary provided `aim`.
 - Videos on [the YouTube Channel.](https://www.youtube.com/channel/UCYe31SWsmK3X9H3r1WM6OKQ)
+- I would suppose this would work on any game, I just play Quake 3.
 
 ### Linux Compile
 ```gcc aimbot.c -Ofast -O3 -lX11 -lm -o aim```
