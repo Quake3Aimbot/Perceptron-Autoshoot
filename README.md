@@ -6,7 +6,7 @@
 - Plays a simple beep tone from the console every time a key is pressed,
   although it may be desired to replace this with a better tone function.
 - Precompiled binary provided `aim`.
-- Videos on [https://www.youtube.com/channel/UCYe31SWsmK3X9H3r1WM6OKQ](the YouTube Channel.)
+- Videos on [the YouTube Channel.](https://www.youtube.com/channel/UCYe31SWsmK3X9H3r1WM6OKQ)
 
 ### Linux Compile
 ```gcc aimbot.c -Ofast -O3 -lX11 -lm -o aim```
