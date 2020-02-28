@@ -30,7 +30,7 @@ N - Neural Aim Only (trains Neural Net)
 M - Colour Aim Only (trains Neural Net)
 ```
 
-#### Preferred Client Settings:
+#### Preferred Client Settings
 ```
 cg_oldRail "1"
 cg_noProjectileTrail "1"
