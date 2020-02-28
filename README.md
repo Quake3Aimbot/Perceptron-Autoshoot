@@ -5,6 +5,7 @@
 - All modes continue to train the perceptrons apart from the DeepAim mode.
 - Plays a simple beep tone from the console every time a key is pressed,
   although it may be desired to replace this with a better tone function.
+- Precompiled binary provided `aim`.
 
 ### Linux Compile
 ```gcc aimbot.c -Ofast -O3 -lX11 -lm -o aim```
