@@ -5,6 +5,28 @@
 ## Linux Compile
 ```gcc aimbot.c -Ofast -O3 -lX11 -lm -o aim```
 
+## Key Mapping
+```
+F10 - Preset Max Tollerance
+UP - Preset Medium Tollerance
+DOWN - Preset Low Tollerence
+LEFT - Manual Lower Tollerance
+RIGHT - Manual Higher Tollerance
+
+H - Retrain/Target on current center screen colour
+G - Same as H but uses an average of 9 surrounding colours
+
+F1 - Target Aqua Blue
+F2 - Target Blue
+F3 - Target Red
+
+Left CTRL - Enable/Disable Auto-Shoot
+
+B - Deep Aim Only
+N - Neural Aim Only (trains Neural Net)
+M - Colour Aim Only (trains Neural Net)
+```
+
 ## Preferred Client Settings:
 ```
 cg_oldRail "1"
