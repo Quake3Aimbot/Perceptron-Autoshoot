@@ -22,7 +22,7 @@
         When I started looking into CNN's
     such as AlexNet I decided I wanted to have a
     go at a simple Perceptron implementation, thus
-    expanding on this project. I was supprised to
+    expanding on this project. I was surprised to
     see gradient descent do such a good job.
 
     Tested using the ioQuake3 client.
