@@ -16,21 +16,22 @@
 ```
 Left CTRL - Enable/Disable Auto-Shoot
 
-&& The following hotkey functions
+&& The following hotkey functions become enabled also;
 
-F10 - Preset Max Tollerance
+F10 - Preset High Tollerance
 UP - Preset Medium Tollerance
 DOWN - Preset Low Tollerence
+
 LEFT - Manual Lower Tollerance
 RIGHT - Manual Higher Tollerance
-
-H - Retrain/Target on current center screen colour
-G - Same as H but uses an average of 9 surrounding colours
 
 F1 - Target Aqua Blue
 F2 - Target Blue
 F3 - Target Red
 F4 - Target Red #2
+
+H - Retrain/Target on current center screen colour
+G - Same as H but uses an average of 9 surrounding colours
 
 B - Deep Aim Only
 N - Neural Aim Only (trains Neural Net)
