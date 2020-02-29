@@ -170,7 +170,7 @@ void softmax_transform(double* w)
 
 double sigmoid(double x)
 {
-    return 1 / (1 + exp((double) - x));
+    return 1 / (1 + exp((double) -x));
 }
 
 double fastSigmoid(double x)
