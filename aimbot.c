@@ -163,7 +163,7 @@ void playTone()
 /***************************************************
    ~~ Perceptron
 */
-const unsigned int _nquality = 1; // 0 - low, 1 - high
+const unsigned int _nquality = 0; // 0 - low, 1 - high
 const float _pbias = 1;			  // Neuron Trigger Bias
 const float _lrate = 1;			  // Learning Rate
 float pw[32][16] = {0};
