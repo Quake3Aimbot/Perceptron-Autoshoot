@@ -156,17 +156,24 @@ int key_is_pressed(KeySym ks)
 
 void playTone()
 {
-    if(system("/usr/bin/aplay /usr/share/sounds/a.wav") == 0)
+    if(system("/usr/bin/aplay --quiet /usr/share/sounds/a.wav") == 0)
         return;
 }
 
 /***************************************************
    ~~ Perceptron
 */
-const unsigned int _nquality = 0; // 0 - low, 1 - high
+const unsigned int _nquality = 1; // 0 - low, 1 - high
 const float _pbias = 1;			  // Neuron Trigger Bias
 const float _lrate = 1;			  // Learning Rate
-float pw[32][8] = {0};
+float pw[32][16] = {0};
+
+void dumpWeights()
+{
+    printf("Weight Dump:\n");
+    for(int i = 0; i < 32; i++)
+        printf("%u: %f %f %f %f %f %f %f %f %f %f %f %f\n", i, pw[i][0], pw[i][1], pw[i][2], pw[i][3], pw[i][4], pw[i][5], pw[i][6], pw[i][7], pw[i][8], pw[i][9], pw[i][10], pw[i][11]);
+}
 
 void softmax_transform(double* w, const uint32_t n)
 {
@@ -248,7 +255,7 @@ double doDeepResult(double* in, double eo)
         softmax_transform(h, outputs);
     
     //Final neuron
-    return doPerceptron(h, outputs, eo, pw[13]);
+    return doPerceptron(h, outputs, eo, pw[19]);
 }
 
 /***************************************************
@@ -395,6 +402,7 @@ int main()
             {
                 mode = 0;
                 printf("\aDeep Aim\n");
+                dumpWeights();
                 playTone();
                 sleep(1);
             }
