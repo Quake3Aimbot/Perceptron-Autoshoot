@@ -163,9 +163,10 @@ void playTone()
 /***************************************************
    ~~ Perceptron
 */
-const unsigned int _nquality = 0; // 0 - low, 1 - high
-const float _pbias = 1;			  // Neuron Trigger Bias
-const float _lrate = 1;			  // Learning Rate
+const unsigned int _nquality = 0;   // 0 - low, 1 - high
+const double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
+const double _pbias = 0.3;			// Bias
+const double _lrate = 0.3;			// Learning Rate
 float pw[32][16] = {0};
 
 void dumpWeights()
@@ -211,7 +212,7 @@ double doPerceptron(double* in, const uint32_t n, double eo, float* w)
     //Activation Function
     if(_nquality == 1){sigmoid(ro);} //Sigmoid function
     if(ro < 0){ro = 0;} //ReLU
-    if(ro >= 1){ro = 1;} //Saturate
+    //if(ro >= 1){ro = 1;} //Saturate
 
     //~~ Teach perceptron
     if(eo != -1)
@@ -499,7 +500,7 @@ int main()
                     if(mode == 1)
                     {
                         const double ghit = doPerceptron((double[]){r/65535, g/65535, b/65535}, 3, -1, pw[i]);
-                        if(ghit > 0)
+                        if(ghit > _probability)
                             fire = 1;
                     }
 
@@ -610,7 +611,7 @@ int main()
                 const double deep_result = doDeepResult(p, -1);
 
                 //If the neuron/perceptron says fire, fire !
-                if(deep_result > 0)
+                if(deep_result > _probability)
                 {
                     //Fire mouse down
                     XSendEvent(d, PointerWindow, True, 0xfff, &event);
