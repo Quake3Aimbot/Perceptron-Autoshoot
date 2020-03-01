@@ -22,7 +22,7 @@
         When I started looking into CNN's
     such as AlexNet I decided I wanted to have a
     go at a simple Perceptron implementation, thus
-    expanding on this project. I was surprised to
+    expanding on this project. I was supprised to
     see gradient descent do such a good job.
 
     Tested using the ioQuake3 client.
@@ -134,10 +134,14 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <math.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+/***************************************************
+   ~~ Utils
+*/
 //https://www.cl.cam.ac.uk/~mgk25/ucs/keysymdef.h
 int key_is_pressed(KeySym ks)
 {
@@ -150,27 +154,33 @@ int key_is_pressed(KeySym ks)
     return isPressed;
 }
 
-//Perceptron
+void playTone()
+{
+    if(system("/usr/bin/aplay /usr/share/sounds/a.wav") == 0)
+        return;
+}
+
+/***************************************************
+   ~~ Perceptron
+*/
 const unsigned int _nquality = 0; // 0 - low, 1 - high
 const float _pbias = 1;			  // Neuron Trigger Bias
 const float _lrate = 1;			  // Learning Rate
-float pw[16][4] = {0}; //Upto 16 weights, 3 inputs per weight and one bias
+float pw[32][8] = {0};
 
-void softmax_transform(double* w)
+void softmax_transform(double* w, const uint32_t n)
 {
-    const size_t max_index = sizeof(w) / sizeof(double);
-
     double d = 0;
-    for(size_t i = 0; i < max_index; i++)
+    for(size_t i = 0; i < n; i++)
         d += exp(w[i]);
 
-    for(size_t i = 0; i < max_index; i++)
+    for(size_t i = 0; i < n; i++)
         w[i] = exp(w[i]) / d;
 }
 
 double sigmoid(double x)
 {
-    return 1 / (1 + exp((double) -x));
+    return 1 / (1 + exp((double) - x));
 }
 
 double fastSigmoid(double x)
@@ -178,30 +188,72 @@ double fastSigmoid(double x)
     return x / (1 + abs(x));
 }
 
-double gPerceptron(double r, double g, double b, float* w)
+double doPerceptron(double* in, const uint32_t n, double eo, float* w)
 {
-    double ro = r*w[0]+g*w[1]+b*w[2]+_pbias*w[3]; //Output
+    //~~ Query perceptron
+    //const size_t max_index = sizeof(in) / sizeof(double);
+
+    //Sum inputs mutliplied by weights
+    double ro = 0;
+    for(size_t i = 0; i < n; i++)
+        ro += in[i] * w[i];
+    
+    //Compute Bias
+    ro += _pbias * w[n];
+
+    //Activation Function
     if(_nquality == 1){sigmoid(ro);} //Sigmoid function
     if(ro < 0){ro = 0;} //ReLU
     if(ro >= 1){ro = 1;} //Saturate
+
+    //~~ Teach perceptron
+    if(eo != -1)
+    {
+        const double error = eo - ro; //Error Gradient
+
+        for(size_t i = 0; i < n; i++)
+            w[i] += error * in[i] * _lrate;
+
+        w[n] += error * _pbias * _lrate;
+    }
+
+    //Return output
     return ro;
 }
 
-double doPerceptron(double r, double g, double b, double eo, float* w)
+double doDeepResult(double* in, double eo)
 {
-    double ro = r*w[0]+g*w[1]+b*w[2]+_pbias*w[3]; //Output
-    if(_nquality == 1){sigmoid(ro);} //Sigmoid function
-    if(ro < 0){ro = 0;} //ReLU
-    if(ro >= 1){ro = 1;} //Saturate
-    const double error = eo - ro; //Error Gradient
-    w[0] += error * r * _lrate;
-    w[1] += error * g * _lrate;
-    w[2] += error * b * _lrate;
-    w[3] += error * _pbias * _lrate;
-    return ro;
+    //Output Array to Final Neuron
+    #define outputs 10
+    double h[outputs] = {0};
+
+    //Quaterize the 3x3 into 2x2x4
+    h[0] = doPerceptron((double[]){in[4], in[1], in[3], in[0]}, 4, eo, pw[9]);
+    h[1] = doPerceptron((double[]){in[4], in[1], in[2], in[5]}, 4, eo, pw[10]);
+    h[2] = doPerceptron((double[]){in[4], in[7], in[6], in[3]}, 4, eo, pw[11]);
+    h[3] = doPerceptron((double[]){in[4], in[7], in[8], in[5]}, 4, eo, pw[12]);
+    
+    //3x3 to 1x3
+    h[4] = doPerceptron((double[]){in[0], in[1], in[2]}, 3, eo, pw[13]);
+    h[5] = doPerceptron((double[]){in[3], in[4], in[5]}, 3, eo, pw[14]);
+    h[6] = doPerceptron((double[]){in[6], in[7], in[8]}, 3, eo, pw[15]);
+
+    //3x3 to 1x3
+    h[7] = doPerceptron((double[]){in[0], in[3], in[6]}, 3, eo, pw[16]);
+    h[8] = doPerceptron((double[]){in[1], in[4], in[7]}, 3, eo, pw[17]);
+    h[9] = doPerceptron((double[]){in[2], in[5], in[8]}, 3, eo, pw[18]);
+
+    //Softmax before the final deciding neuron
+    if(_nquality == 1)
+        softmax_transform(h, outputs);
+    
+    //Final neuron
+    return doPerceptron(h, outputs, eo, pw[13]);
 }
 
-//Entry Point
+/***************************************************
+   ~~ Program Entry Point
+*/
 int main()
 {
     printf("James William Fletcher (james@voxdsp.com)\nSet r_picmip 9 or higher\n & force player models ON\n & set your player model to aqua blue bones\n & select the only aiming reticule/cursor that doesnt obstruct the center of the screen\n\nKey-Mapping's:\nF10 - Preset Max Tollerance\nUP - Preset Medium Tollerance\nDOWN - Preset Low Tollerence\nLEFT - Manual Lower Tollerance\nRIGHT - Manual Higher Tollerance\n\nH - Retrain/Target on current center screen colour\nG - Same as H but uses an average of 9 surrounding colours\n\nF1 - Target Aqua Blue\nF2 - Target Blue\nF3 - Target Red\n\nLeft CTRL - Enable/Disable Auto-Shoot\n\nB - Deep Aim Only\nN - Neural Aim Only (trains Neural Net)\nM - Colour Aim Only (trains Neural Net)\n\n");
@@ -224,7 +276,7 @@ int main()
     
     while(1)
     {
-        //Loop every 10 ms
+        //Loop every 10 ms (1,000 microsecond = 1 millisecond)
         usleep(10000);
 
         //Inputs / Keypress
@@ -236,11 +288,13 @@ int main()
                 printf("\a\n");
                 usleep(300000);
                 printf("\aAUTO-SHOOT: ON\n");
+                playTone();
             }
             else
             {
                 enable = 0;
                 printf("\aAUTO-SHOOT: OFF\n");
+                playTone();
                 sleep(1);
             }
         }
@@ -263,18 +317,21 @@ int main()
             {
                 tol -= 100;
                 printf("\aTOL: %i\n", tol);
+                playTone();
             }
 
             if(key_is_pressed(XK_Right))
             {
                 tol += 100;
                 printf("\aTOL: %i\n", tol);
+                playTone();
             }
 
             if(key_is_pressed(XK_Down))
             {
                 tol = 7333;
                 printf("\aTOL: %i\n", tol);
+                playTone();
                 sleep(1);
             }
 
@@ -282,6 +339,7 @@ int main()
             {
                 tol = 14000;
                 printf("\aTOL: %i\n", tol);
+                playTone();
                 sleep(1);
             }
 
@@ -289,6 +347,7 @@ int main()
             {
                 tol = 26000;
                 printf("\aTOL: %i\n", tol);
+                playTone();
                 sleep(1);
             }
 
@@ -298,6 +357,7 @@ int main()
                 tg=65535;
                 tb=65535;
                 printf("\a:: Aqua Blue\n");
+                playTone();
                 sleep(1);
             }
 
@@ -307,6 +367,7 @@ int main()
                 tg=5397;
                 tb=37265;
                 printf("\a:: Blue\n");
+                playTone();
                 sleep(1);
             }
 
@@ -316,6 +377,7 @@ int main()
                 tg=4883;
                 tb=4112;
                 printf("\a:: Red\n");
+                playTone();
                 sleep(1);
             }
             
@@ -325,6 +387,7 @@ int main()
                 tg=9766;
                 tb=3712;
                 printf("\a:: Red 2\n");
+                playTone();
                 sleep(1);
             }
 
@@ -332,18 +395,21 @@ int main()
             {
                 mode = 0;
                 printf("\aDeep Aim\n");
+                playTone();
                 sleep(1);
             }
             if(key_is_pressed(XK_N))
             {
                 mode = 1;
                 printf("\aNeural Aim\n");
+                playTone();
                 sleep(1);
             }
             if(key_is_pressed(XK_M))
             {
                 mode = 2;
                 printf("\aColour Aim\n");
+                playTone();
                 sleep(1);
             }
             
@@ -378,13 +444,13 @@ int main()
 
             //Get Pixels
             c[0].pixel = XGetPixel(i, 0, 0);
-            c[1].pixel = XGetPixel(i, 0, 1);
-            c[2].pixel = XGetPixel(i, 0, 2);
-            c[3].pixel = XGetPixel(i, 1, 0);
+            c[1].pixel = XGetPixel(i, 1, 0);
+            c[2].pixel = XGetPixel(i, 2, 0);
+            c[3].pixel = XGetPixel(i, 0, 1);
             c[4].pixel = XGetPixel(i, 1, 1);
-            c[5].pixel = XGetPixel(i, 1, 2);
-            c[6].pixel = XGetPixel(i, 2, 0);
-            c[7].pixel = XGetPixel(i, 2, 1);
+            c[5].pixel = XGetPixel(i, 2, 1);
+            c[6].pixel = XGetPixel(i, 0, 2);
+            c[7].pixel = XGetPixel(i, 1, 2);
             c[8].pixel = XGetPixel(i, 2, 2);
             XFree(i);
             
@@ -424,7 +490,7 @@ int main()
                     
                     if(mode == 1)
                     {
-                        const double ghit = gPerceptron(r/65535, g/65535, b/65535, pw[i]);
+                        const double ghit = doPerceptron((double[]){r/65535, g/65535, b/65535}, 3, -1, pw[i]);
                         if(ghit > 0)
                             fire = 1;
                     }
@@ -447,8 +513,7 @@ int main()
                         //printf("Colour Hit");
 
                         //Train Perceptron
-                        const double nr = r/65535, ng = g/65535, nb = b/65535;
-                        const double hit = doPerceptron(nr, ng, nb, 1, pw[i]);
+                        const double hit = doPerceptron((double[]){r/65535, g/65535, b/65535}, 3, 1, pw[i]);
                         if(hit > 0)
                         {
                             //printf(", Perceptron Hit: %u, %lf", i, hit);
@@ -461,7 +526,7 @@ int main()
                     }
                     else
                     {
-                        const double hit = doPerceptron(r/65535, g/65535, b/65535, 0, pw[i]);
+                        const double hit = doPerceptron((double[]){r/65535, g/65535, b/65535}, 3, 0, pw[i]);
                         if(hit > 0)
                         {
                             //printf("Bad Hit: %u, %lf\n", i, hit);
@@ -481,8 +546,8 @@ int main()
             {
                 if(shots > 0)
                 {
+                    //Compute Per Pixel Neuron outputs
                     double p[9]={0};
-
                     for(int i = 0; i < 9; i++)
                     {
                         XQueryColor(d, map, &c[i]);
@@ -491,20 +556,16 @@ int main()
                         const double g = c[i].green / 65535;
                         const double b = c[i].blue / 65535;
 
-                        p[i] = gPerceptron(r, g, b, pw[i]);
+                        p[i] = doPerceptron((double[]){r, g, b}, 3, -1, pw[i]);
                     }
 
-                    double h[3] = {0};
-                    h[0] = doPerceptron(p[0], p[1], p[2], 1, pw[9]);
-                    h[1] = doPerceptron(p[3], p[4], p[5], 1, pw[10]);
-                    h[2] = doPerceptron(p[6], p[7], p[8], 1, pw[11]);
-                    if(_nquality == 1){softmax_transform(h);}
-                    const double deep_result = doPerceptron(h[0], h[1], h[2], 1, pw[12]);
+                    //Compute the deep result
+                    doDeepResult(p, 1);
                 }
                 else
                 {
+                    //Compute Per Pixel Neuron outputs
                     double p[9]={0};
-
                     for(int i = 0; i < 9; i++)
                     {
                         XQueryColor(d, map, &c[i]);
@@ -513,23 +574,19 @@ int main()
                         const double g = c[i].green / 65535;
                         const double b = c[i].blue / 65535;
 
-                        p[i] = gPerceptron(r, g, b, pw[i]);
+                        p[i] = doPerceptron((double[]){r, g, b}, 3, -1, pw[i]);
                     }
 
-                    double h[3] = {0};
-                    h[0] = doPerceptron(p[0], p[1], p[2], 0, pw[9]);
-                    h[1] = doPerceptron(p[3], p[4], p[5], 0, pw[10]);
-                    h[2] = doPerceptron(p[6], p[7], p[8], 0, pw[11]);
-                    if(_nquality == 1){softmax_transform(h);}
-                    const double deep_result = doPerceptron(h[0], h[1], h[2], 0, pw[12]);
+                    //Compute the deep result
+                    doDeepResult(p, 0);
                 }
             }
 
             //Deep Aim
             if(mode == 0)
             {
+                //Compute Per Pixel Neuron outputs
                 double p[9]={0};
-
                 for(int i = 0; i < 9; i++)
                 {
                     XQueryColor(d, map, &c[i]);
@@ -538,16 +595,13 @@ int main()
                     const double g = c[i].green / 65535;
                     const double b = c[i].blue / 65535;
 
-                    p[i] = gPerceptron(r, g, b, pw[i]);
+                    p[i] = doPerceptron((double[]){r, g, b}, 3, -1, pw[i]);
                 }
 
-                double h[3] = {0};
-                h[0] = gPerceptron(p[0], p[1], p[2], pw[9]);
-                h[1] = gPerceptron(p[3], p[4], p[5], pw[10]);
-                h[2] = gPerceptron(p[6], p[7], p[8], pw[11]);
-                if(_nquality == 1){softmax_transform(h);}
-                const double deep_result = gPerceptron(h[0], h[1], h[2], pw[12]);
+                //Query Deep Result
+                const double deep_result = doDeepResult(p, -1);
 
+                //If the neuron/perceptron says fire, fire !
                 if(deep_result > 0)
                 {
                     //Fire mouse down
@@ -572,6 +626,7 @@ int main()
                 tg = (c[0].green + c[1].green + c[2].green + c[3].green + c[4].green + c[5].green + c[6].green + c[7].green + c[8].green) / 9;
                 tb = (c[0].blue + c[1].blue + c[2].blue + c[3].blue + c[4].blue + c[5].blue + c[6].blue + c[7].blue + c[8].blue) / 9;
                 printf("\aG-SET: %i %i %i\n", tr, tg, tb);
+                playTone();
             }
 
             //Close the display
