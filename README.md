@@ -36,6 +36,9 @@ G - Same as H but uses an average of 9 surrounding colours
 B - Deep Aim Only
 N - Neural Aim Only (trains Neural Net)
 M - Colour Aim Only (trains Neural Net)
+
+K - Reduce Neural Firing Probability
+L - Increase Neural Firing Probability
 ```
 
 #### Preferred Quake3 Client Settings
