@@ -164,7 +164,7 @@ void playTone()
    ~~ Perceptron
 */
 const unsigned int _nquality = 0;   // 0 - low, 1 - high
-const double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
+double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
 const double _pbias = 0.3;			// Bias
 const double _lrate = 0.3;			// Learning Rate
 float pw[32][16] = {0};
@@ -193,7 +193,7 @@ double sigmoid(double x)
 
 double fastSigmoid(double x)
 {
-    return x / (1 + abs(x));
+    return x / (1 + fabs(x));
 }
 
 double doPerceptron(double* in, const uint32_t n, double eo, float* w)
@@ -264,7 +264,7 @@ double doDeepResult(double* in, double eo)
 */
 int main()
 {
-    printf("James William Fletcher (james@voxdsp.com)\nSet r_picmip 9 or higher\n & force player models ON\n & set your player model to aqua blue bones\n & select the only aiming reticule/cursor that doesnt obstruct the center of the screen\n\nKey-Mapping's:\nF10 - Preset Max Tollerance\nUP - Preset Medium Tollerance\nDOWN - Preset Low Tollerence\nLEFT - Manual Lower Tollerance\nRIGHT - Manual Higher Tollerance\n\nH - Retrain/Target on current center screen colour\nG - Same as H but uses an average of 9 surrounding colours\n\nF1 - Target Aqua Blue\nF2 - Target Blue\nF3 - Target Red\n\nLeft CTRL - Enable/Disable Auto-Shoot\n\nB - Deep Aim Only\nN - Neural Aim Only (trains Neural Net)\nM - Colour Aim Only (trains Neural Net)\n\n");
+    printf("James William Fletcher (james@voxdsp.com)\nSet r_picmip 9 or higher\n & force player models ON\n & set your player model to aqua blue bones\n & select the only aiming reticule/cursor that doesnt obstruct the center of the screen\n\nKey-Mapping's:\nF10 - Preset Max Tollerance\nUP - Preset Medium Tollerance\nDOWN - Preset Low Tollerence\nLEFT - Manual Lower Tollerance\nRIGHT - Manual Higher Tollerance\n\nH - Retrain/Target on current center screen colour\nG - Same as H but uses an average of 9 surrounding colours\n\nF1 - Target Aqua Blue\nF2 - Target Blue\nF3 - Target Red\n\nLeft CTRL - Enable/Disable Auto-Shoot\n\nB - Deep Aim Only\nN - Neural Aim Only (trains Neural Net)\nM - Colour Aim Only (trains Neural Net)\n\nK - Reduce Neural Firing Probability\nL - Increase Neural Firing Probability\n\n");
 
     //Variables
     unsigned short lr=0, lg=0, lb=0;
@@ -420,6 +420,34 @@ int main()
                 printf("\aColour Aim\n");
                 playTone();
                 sleep(1);
+            }
+
+            if(key_is_pressed(XK_K))
+            {
+                _probability -= 0.1;
+                if(_probability < 0)
+                {
+                    _probability = 0;
+                }
+                else
+                {
+                    printf("\aProbability: %.2f\n", _probability);
+                    playTone();
+                }
+            }
+
+            if(key_is_pressed(XK_L))
+            {
+                _probability += 0.1;
+                if(_probability > 6)
+                {
+                    _probability = 6;
+                }
+                else
+                {
+                    printf("\aProbability: %.2f\n", _probability);
+                    playTone();
+                }
             }
             
 
