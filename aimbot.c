@@ -165,7 +165,6 @@ void playTone()
 */
 const unsigned int _nquality = 0;   // 0 - low, 1 - high
 double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
-const double _pbias = 0.3;			// Bias
 const double _lrate = 0.3;			// Learning Rate
 float pw[32][16] = {0};
 
@@ -205,9 +204,6 @@ double doPerceptron(double* in, const uint32_t n, double eo, float* w)
     double ro = 0;
     for(size_t i = 0; i < n; i++)
         ro += in[i] * w[i];
-    
-    //Compute Bias
-    ro += _pbias * w[n];
 
     //Activation Function
     if(_nquality == 1){sigmoid(ro);} //Sigmoid function
@@ -221,8 +217,6 @@ double doPerceptron(double* in, const uint32_t n, double eo, float* w)
 
         for(size_t i = 0; i < n; i++)
             w[i] += error * in[i] * _lrate;
-
-        w[n] += error * _pbias * _lrate;
     }
 
     //Return output
@@ -281,6 +275,8 @@ int main()
     
     unsigned int enable = 0;
     unsigned int mode = 2;
+
+    unsigned int liter = 0;
     
     while(1)
     {
@@ -558,7 +554,9 @@ int main()
                         }
 
                         //printf("\n");	
-
+                        
+                        liter++;
+                        printf("LI: %u\n", liter);
                         shots++;
                     }
                     else
