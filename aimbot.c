@@ -211,7 +211,6 @@ double doPerceptron(double* in, const uint32_t n, double eo, float* w)
     if(eo != -1)
     {
         const double error = eo - ro; //Error Gradient
-
         for(size_t i = 0; i < n; i++)
             w[i] += error * in[i] * _lrate;
     }
@@ -241,6 +240,10 @@ double doDeepResult(double* in, double eo)
     h[7] = doPerceptron((double[]){in[0], in[3], in[6]}, 3, eo, pw[16]);
     h[8] = doPerceptron((double[]){in[1], in[4], in[7]}, 3, eo, pw[17]);
     h[9] = doPerceptron((double[]){in[2], in[5], in[8]}, 3, eo, pw[18]);
+
+    //Softmax before the final deciding neuron
+    if(_nquality == 1)
+        softmax_transform(h, outputs);
     
     //Final neuron
     return doPerceptron(h, outputs, eo, pw[19]);
