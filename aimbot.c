@@ -165,7 +165,6 @@ void playTone()
 */
 const unsigned int _nquality = 0;   // 0 - low, 1 - high
 double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
-const double _pbias = 0.3;			// Bias
 const double _lrate = 0.3;			// Learning Rate
 float pw[32][16] = {0};
 
@@ -198,34 +197,26 @@ double fastSigmoid(double x)
 
 double doPerceptron(double* in, const uint32_t n, double eo, float* w)
 {
-    //~~ Query perceptron
-    //const size_t max_index = sizeof(in) / sizeof(double);
-
+//~~ Query perceptron
     //Sum inputs mutliplied by weights
     double ro = 0;
     for(size_t i = 0; i < n; i++)
         ro += in[i] * w[i];
-    
-    //Compute Bias
-    ro += _pbias * w[n];
 
     //Activation Function
     if(_nquality == 1){sigmoid(ro);} //Sigmoid function
     if(ro < 0){ro = 0;} //ReLU
-    //if(ro >= 1){ro = 1;} //Saturate
 
-    //~~ Teach perceptron
+//~~ Teach perceptron
     if(eo != -1)
     {
         const double error = eo - ro; //Error Gradient
 
         for(size_t i = 0; i < n; i++)
             w[i] += error * in[i] * _lrate;
-
-        w[n] += error * _pbias * _lrate;
     }
 
-    //Return output
+//~~ Return output
     return ro;
 }
 
@@ -250,10 +241,6 @@ double doDeepResult(double* in, double eo)
     h[7] = doPerceptron((double[]){in[0], in[3], in[6]}, 3, eo, pw[16]);
     h[8] = doPerceptron((double[]){in[1], in[4], in[7]}, 3, eo, pw[17]);
     h[9] = doPerceptron((double[]){in[2], in[5], in[8]}, 3, eo, pw[18]);
-
-    //Softmax before the final deciding neuron
-    if(_nquality == 1)
-        softmax_transform(h, outputs);
     
     //Final neuron
     return doPerceptron(h, outputs, eo, pw[19]);
@@ -281,6 +268,8 @@ int main()
     
     unsigned int enable = 0;
     unsigned int mode = 2;
+
+    unsigned int liter = 0;
     
     while(1)
     {
@@ -558,7 +547,9 @@ int main()
                         }
 
                         //printf("\n");	
-
+                        
+                        liter++;
+                        printf("LI: %u\n", liter);
                         shots++;
                     }
                     else
