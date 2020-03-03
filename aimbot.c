@@ -4,7 +4,7 @@
 --------------------------------------------------
 
     r_picmip 16 & force models to blue bones
-        You don't have to set `r_picmip` to 16 or above
+        You don't have to set `r_picmip` to 16
     but it does help.
 
     You will however need to set `cg_forceModel 1`
