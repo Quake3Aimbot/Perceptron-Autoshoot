@@ -10,7 +10,7 @@
 - I would suppose this would work on any game, I just play Quake 3.
 
 ### Linux Compile
-```gcc aimbot.c -Ofast -O3 -lX11 -lm -o aim```
+```gcc aimbot.c -Ofast -lX11 -lm -o aim```
 
 #### Key Mapping
 ```
