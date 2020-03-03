@@ -592,7 +592,7 @@ int main()
                     double p[9]={0};
                     for(int i = 0; i < 9; i++)
                     {
-                        //XQueryColor(d, map, &c[i]);
+                        XQueryColor(d, map, &c[i]);
 
                         const double r = c[i].red / 65535;
                         const double g = c[i].green / 65535;
@@ -610,7 +610,7 @@ int main()
                     double p[9]={0};
                     for(int i = 0; i < 9; i++)
                     {
-                        //XQueryColor(d, map, &c[i]);
+                        XQueryColor(d, map, &c[i]);
 
                         const double r = c[i].red / 65535;
                         const double g = c[i].green / 65535;
@@ -631,7 +631,7 @@ int main()
                 double p[9]={0};
                 for(int i = 0; i < 9; i++)
                 {
-                    //XQueryColor(d, map, &c[i]);
+                    XQueryColor(d, map, &c[i]);
 
                     const double r = c[i].red / 65535;
                     const double g = c[i].green / 65535;
