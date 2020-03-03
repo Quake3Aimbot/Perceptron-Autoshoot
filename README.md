@@ -14,7 +14,7 @@
 
 #### Key Mapping
 ```
-Left CTRL - Enable/Disable Auto-Shoot
+Left CTRL + Left ALT - Enable/Disable Auto-Shoot
 
 && The following hotkey functions become enabled also;
 
