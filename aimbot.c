@@ -3,7 +3,7 @@
     James William Fletcher (james@voxdsp.com)
 --------------------------------------------------
 
-    r_picmip 20 & force models to blue bones
+    r_picmip 16 & force models to blue bones
         You don't have to set `r_picmip` to 16 or above
     but it does help.
 
@@ -254,7 +254,7 @@ double doDeepResult(double* in, double eo)
 */
 int main()
 {
-    printf("James William Fletcher (james@voxdsp.com)\nSet r_picmip 9 or higher\n & force player models ON\n & set your player model to aqua blue bones\n & select the only aiming reticule/cursor that doesnt obstruct the center of the screen\n\nKey-Mapping's:\nF10 - Preset Max Tollerance\nUP - Preset Medium Tollerance\nDOWN - Preset Low Tollerence\nLEFT - Manual Lower Tollerance\nRIGHT - Manual Higher Tollerance\n\nH - Retrain/Target on current center screen colour\nG - Same as H but uses an average of 9 surrounding colours\n\nF1 - Target Aqua Blue\nF2 - Target Blue\nF3 - Target Red\n\nLeft CTRL - Enable/Disable Auto-Shoot\n\nB - Deep Aim Only\nN - Neural Aim Only (trains Neural Net)\nM - Colour Aim Only (trains Neural Net)\n\nK - Reduce Neural Firing Probability\nL - Increase Neural Firing Probability\n\n");
+    printf("James William Fletcher (james@voxdsp.com)\nSet r_picmip 9 or higher\n & force player models ON\n & set your player model to aqua blue bones\n & select the only aiming reticule/cursor that doesnt obstruct the center of the screen\n\nKey-Mapping's:\nF10 - Preset Max Tollerance\nUP - Preset Medium Tollerance\nDOWN - Preset Low Tollerence\nLEFT - Manual Lower Tollerance\nRIGHT - Manual Higher Tollerance\n\nH - Retrain/Target on current center screen colour\nG - Same as H but uses an average of 9 surrounding colours\n\nF1 - Target Aqua Blue\nF2 - Target Blue\nF3 - Target Red\n\nLeft CTRL + Left ALT - Enable/Disable Auto-Shoot\n\nB - Deep Aim Only\nN - Neural Aim Only (trains Neural Net)\nM - Colour Aim Only (trains Neural Net)\n\nK - Reduce Neural Firing Probability\nL - Increase Neural Firing Probability\n\n");
 
     //Variables
     unsigned short lr=0, lg=0, lb=0;
@@ -280,7 +280,7 @@ int main()
         usleep(10000);
 
         //Inputs / Keypress
-        if(key_is_pressed(XK_Control_L))
+        if(key_is_pressed(XK_Control_L) && key_is_pressed(XK_Alt_L))
         {
             if(enable == 0)
             {
@@ -460,7 +460,7 @@ int main()
             //Get Center Window
             XWindowAttributes attr;
             XGetWindowAttributes(d, event.xbutton.window, &attr);
-            x = attr.width/2; 
+            x = attr.width/2;
             y = attr.height/2;
 
             //Get Image Block
@@ -484,8 +484,19 @@ int main()
             XFree(i);
             
             //Get Colour Map
-            const Colormap map = XDefaultColormap(d, si);
-            //printf("M: %li %li\n", map, c.pixel);
+            const Colormap map = DefaultColormap(d, si);
+            //printf("M: %li %li\n", map, c[0].pixel);
+
+            //https://thestarman.pcministry.com/asm/6to64bits.htm
+            int ti = 0;
+            for(int i = 0; i < 9; i++)
+                if(c[0].pixel >= 16777216)
+                    ti = 1;
+            if(ti == 1)
+            {
+                XCloseDisplay(d);
+                continue;
+            }
 
             //For each pixel ...
             int phi = 0;
@@ -581,7 +592,7 @@ int main()
                     double p[9]={0};
                     for(int i = 0; i < 9; i++)
                     {
-                        XQueryColor(d, map, &c[i]);
+                        //XQueryColor(d, map, &c[i]);
 
                         const double r = c[i].red / 65535;
                         const double g = c[i].green / 65535;
@@ -599,7 +610,7 @@ int main()
                     double p[9]={0};
                     for(int i = 0; i < 9; i++)
                     {
-                        XQueryColor(d, map, &c[i]);
+                        //XQueryColor(d, map, &c[i]);
 
                         const double r = c[i].red / 65535;
                         const double g = c[i].green / 65535;
@@ -620,7 +631,7 @@ int main()
                 double p[9]={0};
                 for(int i = 0; i < 9; i++)
                 {
-                    XQueryColor(d, map, &c[i]);
+                    //XQueryColor(d, map, &c[i]);
 
                     const double r = c[i].red / 65535;
                     const double g = c[i].green / 65535;
