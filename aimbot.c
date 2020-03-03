@@ -487,17 +487,6 @@ int main()
             const Colormap map = DefaultColormap(d, si);
             //printf("M: %li %li\n", map, c[0].pixel);
 
-            //https://thestarman.pcministry.com/asm/6to64bits.htm
-            int ti = 0;
-            for(int i = 0; i < 9; i++)
-                if(c[0].pixel >= 16777216)
-                    ti = 1;
-            if(ti == 1)
-            {
-                XCloseDisplay(d);
-                continue;
-            }
-
             //For each pixel ...
             int phi = 0;
             int bhi = 0;
