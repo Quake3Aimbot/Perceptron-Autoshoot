@@ -4,7 +4,7 @@
 --------------------------------------------------
 
     r_picmip 16 & force models to blue bones
-        You don't have to set `r_picmip` to 16
+        You don't have to set `r_picmip` to 16 or above
     but it does help.
 
     You will however need to set `cg_forceModel 1`
@@ -484,8 +484,19 @@ int main()
             XFree(i);
             
             //Get Colour Map
-            const Colormap map = DefaultColormap(d, si);
+            const Colormap map = XDefaultColormap(d, si);
             //printf("M: %li %li\n", map, c[0].pixel);
+
+            //https://thestarman.pcministry.com/asm/6to64bits.htm
+            int ti = 0;
+            for(int i = 0; i < 9; i++)
+                if(c[0].pixel >= 16777216)
+                    ti = 1;
+            if(ti == 1)
+            {
+                XCloseDisplay(d);
+                continue;
+            }
 
             //For each pixel ...
             int phi = 0;
