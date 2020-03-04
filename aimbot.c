@@ -512,15 +512,6 @@ int main()
                     const unsigned short g = c[i].green;
                     const unsigned short b = c[i].blue;
                     
-                    //Center Pixel Target
-                    if(key_is_pressed(XK_H) && i == 0)
-                    {
-                        tr = r;
-                        tg = g;
-                        tb = b;
-                        printf("\aH-SET: %i %i %i\n", tr, tg, tb);
-                    }
-                    
                     //Shoot if colour has locked on
                     int fire = 0;
 
@@ -659,6 +650,16 @@ int main()
                     XSendEvent(d, PointerWindow, True, 0xfff, &event);
                     XFlush(d);
                 }
+            }
+
+            //Center Pixel Target
+            if(key_is_pressed(XK_H))
+            {
+                tr = c[4].red;
+                tg = c[4].green;
+                tb = c[4].blue;
+                printf("\aH-SET: %i %i %i\n", tr, tg, tb);
+                playTone();
             }
             
             //Average Target
