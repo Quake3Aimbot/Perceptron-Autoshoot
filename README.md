@@ -8,7 +8,7 @@
 - Precompiled binary provided `aim`.
 - Videos on [the YouTube Channel.](https://www.youtube.com/channel/UCYe31SWsmK3X9H3r1WM6OKQ)
 - I would suppose this would work on any game, I just play Quake 3.
-- The "LI" count is how many training iterations have taken place. I find ~200
+- The "LI:" count is how many training iterations have taken place. I find ~200
   is the minimum sweet spot.
 
 ### Linux Compile
