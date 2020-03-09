@@ -10,6 +10,7 @@
 - I would suppose this would work on any game, I just play Quake 3.
 - The "LI:" count is how many training iterations have taken place. I find ~200
   is the minimum 'sweet spot'.
+- `a.wav` was made using the [Borg-ER2](https://github.com/mrbid/Borg-ER-2)
 
 ### Linux Compile
 ```gcc aimbot.c -Ofast -lX11 -lm -o aim```
