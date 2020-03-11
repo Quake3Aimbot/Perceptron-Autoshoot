@@ -45,6 +45,8 @@ M - Colour Aim Only (trains Neural Net)
 
 K - Reduce Neural Firing Probability
 L - Increase Neural Firing Probability
+
+J - Randomise Perceptron Weights
 ```
 
 #### Preferred Quake3 Client Settings
