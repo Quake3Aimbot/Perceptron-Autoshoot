@@ -455,8 +455,8 @@ int main()
                 tr=5482;
                 tg=65535;
                 tb=65535;
-                printf("\a:: QuakeLive Blue\n");
-                speakS("Quake Live Blue");
+                printf("\a:: OpenArena Blue\n");
+                speakS("Open Arena Blue");
             }
 
             if(key_is_pressed(XK_F6))
@@ -464,8 +464,17 @@ int main()
                 tr=65535;
                 tg=6453;
                 tb=0;
-                printf("\a:: QuakeLive Red\n");
-                speakS("Quake Live Red");
+                printf("\a:: OpenArena Red\n");
+                speakS("Open Arena Red");
+            }
+
+            if(key_is_pressed(XK_F7))
+            {
+                tr=65535;
+                tg=65535;
+                tb=65535;
+                printf("\a:: OpenArena White\n");
+                speakS("Open Arena White");
             }
 
             if(key_is_pressed(XK_B))
