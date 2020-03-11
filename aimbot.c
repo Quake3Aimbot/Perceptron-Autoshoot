@@ -180,7 +180,7 @@ void speakI(const int i)
 void speakF(const double f)
 {
     char s[256];
-    sprintf(s, "/usr/bin/espeak %f.1", f);
+    sprintf(s, "/usr/bin/espeak %.1f", f);
     if(system(s) <= 0)
         sleep(1);
 }
@@ -319,6 +319,8 @@ int main()
     unsigned int mode = 2;
 
     unsigned int liter = 0;
+
+    unsigned int pc = 0;
     
     while(1)
     {
@@ -362,14 +364,33 @@ int main()
             {
                 tol -= 100;
                 printf("\aTOL: %i\n", tol);
-                speakI(tol);
+                pc++;
+                if(pc > 5)
+                {
+                    pc = 0;
+                    speakI(tol);
+                }
+                else
+                {
+                    playTone();
+                }
             }
 
             if(key_is_pressed(XK_Right))
             {
                 tol += 100;
                 printf("\aTOL: %i\n", tol);
-                speakI(tol);
+                pc++;
+                if(pc > 5)
+                {
+                    pc = 0;
+                    speakI(tol);
+                }
+                else
+                {
+                    playTone();
+                }
+                
             }
 
             if(key_is_pressed(XK_Down))
@@ -435,7 +456,7 @@ int main()
                 tg=65535;
                 tb=65535;
                 printf("\a:: QuakeLive Blue\n");
-                speakS("QuakeLive Blue");
+                speakS("Quake Live Blue");
             }
 
             if(key_is_pressed(XK_F6))
@@ -444,7 +465,7 @@ int main()
                 tg=6453;
                 tb=0;
                 printf("\a:: QuakeLive Red\n");
-                speakS("QuakeLive Red");
+                speakS("Quake Live Red");
             }
 
             if(key_is_pressed(XK_B))
