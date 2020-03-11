@@ -136,6 +136,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
+#include <time.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -156,8 +157,32 @@ int key_is_pressed(KeySym ks)
 
 void playTone()
 {
-    if(system("/usr/bin/aplay --quiet /usr/share/sounds/a.wav") == 0)
-        return;
+    if(system("/usr/bin/aplay --quiet /usr/share/sounds/a.wav") <= 0)
+        sleep(1);
+}
+
+void speakS(const char* text)
+{
+    char s[256];
+    sprintf(s, "/usr/bin/espeak \"%s\"", text);
+    if(system(s) <= 0)
+        sleep(1);
+}
+
+void speakI(const int i)
+{
+    char s[256];
+    sprintf(s, "/usr/bin/espeak %i", i);
+    if(system(s) <= 0)
+        sleep(1);
+}
+
+void speakF(const double f)
+{
+    char s[256];
+    sprintf(s, "/usr/bin/espeak %f.1", f);
+    if(system(s) <= 0)
+        sleep(1);
 }
 
 /***************************************************
@@ -167,6 +192,27 @@ const unsigned int _nquality = 0;   // 0 - low, 1 - high
 double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
 const double _lrate = 0.3;			// Learning Rate
 float pw[32][16] = {0};
+
+float qRandFloat(const float min, const float max)
+{
+    static time_t ls = 0;
+    if(time(0) > ls)
+    {
+        srand(time(0));
+        ls = time(0) + 33;
+    }
+    const float rv = (float)rand();
+    if(rv == 0)
+        return min;
+    return ( (rv / RAND_MAX) * (max-min) ) + min;
+}
+
+void randomWeights()
+{
+    for(int i = 0; i < 32; i++)
+        for(int i2 = 0; i2 < 16; i2++)
+            pw[i][i2] = qRandFloat(-1, 1);
+}
 
 void dumpWeights()
 {
@@ -254,7 +300,7 @@ double doDeepResult(double* in, double eo)
 */
 int main()
 {
-    printf("James William Fletcher (james@voxdsp.com)\nSet r_picmip 9 or higher\n & force player models ON\n & set your player model to aqua blue bones\n & select the only aiming reticule/cursor that doesnt obstruct the center of the screen\n\nKey-Mapping's:\nF10 - Preset Max Tollerance\nUP - Preset Medium Tollerance\nDOWN - Preset Low Tollerence\nLEFT - Manual Lower Tollerance\nRIGHT - Manual Higher Tollerance\n\nH - Retrain/Target on current center screen colour\nG - Same as H but uses an average of 9 surrounding colours\n\nF1 - Target Aqua Blue\nF2 - Target Blue\nF3 - Target Red\n\nLeft CTRL + Left ALT - Enable/Disable Auto-Shoot\n\nB - Deep Aim Only\nN - Neural Aim Only (trains Neural Net)\nM - Colour Aim Only (trains Neural Net)\n\nK - Reduce Neural Firing Probability\nL - Increase Neural Firing Probability\n\n");
+    printf("James William Fletcher (james@voxdsp.com)\nSet r_picmip 9 or higher\n & force player models ON\n & set your player model to aqua blue bones\n & select the only aiming reticule/cursor that doesnt obstruct the center of the screen\n\nKey-Mapping's:\nF10 - Preset Max Tollerance\nUP - Preset Medium Tollerance\nDOWN - Preset Low Tollerence\nLEFT - Manual Lower Tollerance\nRIGHT - Manual Higher Tollerance\n\nH - Retrain/Target on current center screen colour\nG - Same as H but uses an average of 9 surrounding colours\n\nF1 - Target Aqua Blue\nF2 - Target Blue\nF3 - Target Red\n\nLeft CTRL + Left ALT - Enable/Disable Auto-Shoot\n\nB - Deep Aim Only\nN - Neural Aim Only (trains Neural Net)\nM - Colour Aim Only (trains Neural Net)\n\nK - Reduce Neural Firing Probability\nL - Increase Neural Firing Probability\n\nR - Randomize Perceptron Weights\n\n");
 
     //Variables
     unsigned short lr=0, lg=0, lb=0;
@@ -288,14 +334,13 @@ int main()
                 printf("\a\n");
                 usleep(300000);
                 printf("\aAUTO-SHOOT: ON\n");
-                playTone();
+                speakS("on");
             }
             else
             {
                 enable = 0;
                 printf("\aAUTO-SHOOT: OFF\n");
-                playTone();
-                sleep(1);
+                speakS("off");
             }
         }
         
@@ -317,38 +362,35 @@ int main()
             {
                 tol -= 100;
                 printf("\aTOL: %i\n", tol);
-                playTone();
+                speakI(tol);
             }
 
             if(key_is_pressed(XK_Right))
             {
                 tol += 100;
                 printf("\aTOL: %i\n", tol);
-                playTone();
+                speakI(tol);
             }
 
             if(key_is_pressed(XK_Down))
             {
                 tol = 7333;
                 printf("\aTOL: %i\n", tol);
-                playTone();
-                sleep(1);
+                speakI(tol);
             }
 
             if(key_is_pressed(XK_Up))
             {
                 tol = 14000;
                 printf("\aTOL: %i\n", tol);
-                playTone();
-                sleep(1);
+                speakI(tol);
             }
 
             if(key_is_pressed(XK_F10))
             {
                 tol = 26000;
                 printf("\aTOL: %i\n", tol);
-                playTone();
-                sleep(1);
+                speakI(tol);
             }
 
             if(key_is_pressed(XK_F1)) //Aqua Blue
@@ -357,8 +399,7 @@ int main()
                 tg=65535;
                 tb=65535;
                 printf("\a:: Aqua Blue\n");
-                playTone();
-                sleep(1);
+                speakS("Aqua Blue");
             }
 
             if(key_is_pressed(XK_F2)) //Blue
@@ -367,8 +408,7 @@ int main()
                 tg=5397;
                 tb=37265;
                 printf("\a:: Blue\n");
-                playTone();
-                sleep(1);
+                speakS("Blue");
             }
 
             if(key_is_pressed(XK_F3)) //Red
@@ -377,8 +417,7 @@ int main()
                 tg=4883;
                 tb=4112;
                 printf("\a:: Red\n");
-                playTone();
-                sleep(1);
+                speakS("Red");
             }
             
             if(key_is_pressed(XK_F4)) //Red 2
@@ -387,8 +426,25 @@ int main()
                 tg=9766;
                 tb=3712;
                 printf("\a:: Red 2\n");
-                playTone();
-                sleep(1);
+                speakS("Red 2");
+            }
+
+            if(key_is_pressed(XK_F5))
+            {
+                tr=5482;
+                tg=65535;
+                tb=65535;
+                printf("\a:: QuakeLive Blue\n");
+                speakS("QuakeLive Blue");
+            }
+
+            if(key_is_pressed(XK_F6))
+            {
+                tr=65535;
+                tg=6453;
+                tb=0;
+                printf("\a:: QuakeLive Red\n");
+                speakS("QuakeLive Red");
             }
 
             if(key_is_pressed(XK_B))
@@ -396,22 +452,19 @@ int main()
                 mode = 0;
                 printf("\aDeep Aim\n");
                 dumpWeights();
-                playTone();
-                sleep(1);
+                speakS("Deep Aim");
             }
             if(key_is_pressed(XK_N))
             {
                 mode = 1;
                 printf("\aNeural Aim\n");
-                playTone();
-                sleep(1);
+                speakS("Neural Aim");
             }
             if(key_is_pressed(XK_M))
             {
                 mode = 2;
                 printf("\aColour Aim\n");
-                playTone();
-                sleep(1);
+                speakS("Colour Aim");
             }
 
             if(key_is_pressed(XK_K))
@@ -424,7 +477,7 @@ int main()
                 else
                 {
                     printf("\aProbability: %.2f\n", _probability);
-                    playTone();
+                    speakF(_probability);
                 }
             }
 
@@ -438,8 +491,14 @@ int main()
                 else
                 {
                     printf("\aProbability: %.2f\n", _probability);
-                    playTone();
+                    speakF(_probability);
                 }
+            }
+
+            if(key_is_pressed(XK_J))
+            {
+                randomWeights();
+                speakS("Weights Randomised");
             }
             
 
