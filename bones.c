@@ -312,7 +312,7 @@ double doDeepResult(double* in)
 */
 int main()
 {
-    printf("James William Fletcher (james@voxdsp.com)\n\nLCTRL + LALT = ON/OFF\n\n1-7 Preset Weight Selection\n\nLEFT - Decrease Firing Probability\nRIGHT - Increase Firing Probability\n\n");
+    printf("James William Fletcher (james@voxdsp.com)\n\nLCTRL + LALT = ON/OFF\n\n1-7 = Preset Weight Selection\n\nLEFT = Decrease Firing Probability\nRIGHT = Increase Firing Probability\n\n");
     XColor c[9];
     Display *d;
     int si;
