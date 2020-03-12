@@ -191,7 +191,7 @@ void speakF(const double f)
 const unsigned int _nquality = 0;   // 0 - low, 1 - high
 double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
 const double _lrate = 0.3;			// Learning Rate
-float pw[32][16] = {0};
+double pw[32][16] = {0};
 
 float qRandFloat(const float min, const float max)
 {
@@ -241,7 +241,7 @@ double fastSigmoid(double x)
     return x / (1 + fabs(x));
 }
 
-double doPerceptron(double* in, const uint32_t n, double eo, float* w)
+double doPerceptron(double* in, const uint32_t n, double eo, double* w)
 {
 //~~ Query perceptron
     //Sum inputs mutliplied by weights
@@ -392,7 +392,7 @@ int main()
                 }
                 
             }
-
+            
             if(key_is_pressed(XK_Down))
             {
                 tol = 7333;
