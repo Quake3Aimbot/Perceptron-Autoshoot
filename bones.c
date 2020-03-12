@@ -250,12 +250,6 @@ int key_is_pressed(KeySym ks)
     return isPressed;
 }
 
-void playTone()
-{
-    if(system("/usr/bin/aplay --quiet /usr/share/sounds/a.wav") <= 0)
-        sleep(1);
-}
-
 void speakS(const char* text)
 {
     char s[256];
