@@ -14,6 +14,7 @@
 - It's usually better to use `r_vertexLight 0` (lightmaps) with the bright blue bones model as it creates a darker contrast between the character and the environment. You could also use a dark player model with `r_vertexLight 1` for the opposite effect.
 - For best results set `r_picmip 16` & force models to blue bones `cg_forceModel 1` & `model "bones/default"` also set the crosshair that does not block the center of the screen `cg_drawCrosshair 7`
 - You might need to manually install `aplay` and `espeak` via `sudo apt install` for example, however these do come pre-installed with Ubuntu.
+- You will see the `compile.sh` script will also produce `baim` which is a simplified version which only targets the aqua blue bones player model using pre-computed Deep Aim weights.
 
 ### Linux Compile
 ```gcc aimbot.c -Ofast -lX11 -lm -o aim```
