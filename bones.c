@@ -83,7 +83,7 @@
 
 /***************************************************
    ~~ Pre-computed weights /
-   Do you really want to remove the ladt two columns from each row
+   Do you really want to remove the last two columns from each row
    when you know it's going to get padded anyway?
 
    These go in order from least trained weights to most trained weights.
