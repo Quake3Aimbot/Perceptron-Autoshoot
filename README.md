@@ -5,7 +5,6 @@
 - All modes continue to train the perceptrons apart from the DeepAim mode.
 - Plays a simple beep tone from the console every time a key is pressed,
   although it may be desired to replace this with a better tone function.
-- Precompiled binary provided `aim`.
 - Videos on [the YouTube Channel.](https://www.youtube.com/channel/UCYe31SWsmK3X9H3r1WM6OKQ)
 - I would suppose this would work on any game, I just play Quake 3.
 - The "LI:" count is how many training iterations have taken place. I find ~200
@@ -15,6 +14,7 @@
 - For best results set `r_picmip 16` & force models to blue bones `cg_forceModel 1` & `model "bones/default"` also set the crosshair that does not block the center of the screen `cg_drawCrosshair 7`
 - You might need to manually install `aplay` and `espeak` via `sudo apt install` for example, however these do come pre-installed with Ubuntu.
 - You will see the `compile.sh` script will also produces a `baim` binary. This is a simplified version which only targets the aqua blue bones player model using pre-computed Deep Aim weights.
+- I've added a desperate version `desperate.c` compiled as `daim`, it runs more than one 'kernel' per scan depeding on two configuations, confidence and desperation. A further simplification from bones.c also targeting only the aqua blue bones model. Ofc nothing is stopping some one from using the orignal `aim` binary to train their own weights for use in such *alternate applications of desire*.
 
 ### Linux Compile
 ```gcc aimbot.c -Ofast -lX11 -lm -o aim```
