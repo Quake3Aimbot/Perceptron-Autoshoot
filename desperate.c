@@ -20,29 +20,20 @@
     cg_forceModel "1"
     cg_railTrailTime "100"
     cg_crosshairSize "24"
-    cg_drawFPS "1"
     cg_draw2D "1"
-    cg_gibs "1"
+    cg_gibs "0"
     cg_fov "160"
     cg_zoomfov "90"
-    cg_drawGun "1"
     cg_brassTime "0"
     cg_drawCrosshair "7"
     cg_drawCrosshairNames "1"
     cg_marks "0"
     cg_crosshairPulse "1"
-    cg_stepTime "100"
-    cg_centertime "3"
     xp_noParticles "1"
-    xp_noShotgunTrail "1"
-    xp_noMip "2047"
-    xp_ambient "1"
     xp_modelJump "0"
     xp_corpse "3"
     xp_crosshairColor "7"
-    xp_improvePrediction "1"
-    cm_playerCurveClip "1"
-    com_maxfps "600"
+    com_maxfps "1000"
     com_blood "0"
     cg_autoswitch "0"
     rate "25000"
@@ -51,22 +42,9 @@
     headmodel "bones/default"
     team_model "bones/default"
     team_headmodel "bones/default"
-    color1 "6"
-    color2 "5"
-    cg_predictItems "1"
     r_picmip "16"
-    r_overBrightBits "1"
-    r_mode "-2"
-    r_fullscreen "1"
-    r_customwidth "1920"
-    r_customheight "1080"
-    r_simpleMipMaps "1"
-    r_railWidth "16"
-    r_railCoreWidth "6"
-    r_railSegmentLength "32"
+    r_vertexLight "0"
     cg_shadows "0"
-    com_zoneMegs "24"
-    com_hunkmegs "512"
 --------------------------------------------------
     ^ Thats how I like to configure my Quake 3 client.
 --------------------------------------------------
@@ -88,7 +66,7 @@
 
    These go in order from least trained weights to most trained weights.
 */
-double pw[7][20][12] = {{{-0.000678,0.122750,0.877928,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000},
+float pw[7][20][12] = {{{-0.000678,0.122750,0.877928,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000},
 {-0.014211,0.242387,0.769805,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000},
 {0.002608,0.360765,0.638191,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000},
 {-0.002566,0.221006,0.781539,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000},
@@ -258,7 +236,7 @@ void speakS(const char* text)
         sleep(1);
 }
 
-void speakF(const double f)
+void speakF(const float f)
 {
     char s[256];
     sprintf(s, "/usr/bin/espeak %.1f", f);
@@ -269,38 +247,38 @@ void speakF(const double f)
 /***************************************************
    ~~ Perceptron
 */
-double _probability = 0.7;    // Minimum Probability from Neuron before Attacking
+float _probability = 0.7;    // Minimum Probability from Neuron before Attacking
 
-double doPerceptron(double* in, const uint32_t n, double* w)
+float doPerceptron(float* in, const uint32_t n, float* w)
 {
-    double ro = 0;
+    float ro = 0;
     for(size_t i = 0; i < n; i++)
         ro += in[i] * w[i];
     if(ro < 0){ro = 0;} //ReLU
     return ro;
 }
 
-double doDeepResult(double* in, const unsigned int k)
+float doDeepResult(float* in, const unsigned int k)
 {
     //Output Array to Final Neuron
     #define outputs 10
-    double h[outputs] = {0};
+    float h[outputs] = {0};
 
     //Quaterize the 3x3 into 2x2x4
-    h[0] = doPerceptron((double[]){in[4], in[1], in[3], in[0]}, 4, pw[k][9]);
-    h[1] = doPerceptron((double[]){in[4], in[1], in[2], in[5]}, 4, pw[k][10]);
-    h[2] = doPerceptron((double[]){in[4], in[7], in[6], in[3]}, 4, pw[k][11]);
-    h[3] = doPerceptron((double[]){in[4], in[7], in[8], in[5]}, 4, pw[k][12]);
+    h[0] = doPerceptron((float[]){in[4], in[1], in[3], in[0]}, 4, pw[k][9]);
+    h[1] = doPerceptron((float[]){in[4], in[1], in[2], in[5]}, 4, pw[k][10]);
+    h[2] = doPerceptron((float[]){in[4], in[7], in[6], in[3]}, 4, pw[k][11]);
+    h[3] = doPerceptron((float[]){in[4], in[7], in[8], in[5]}, 4, pw[k][12]);
     
     //3x3 to 1x3
-    h[4] = doPerceptron((double[]){in[0], in[1], in[2]}, 3, pw[k][13]);
-    h[5] = doPerceptron((double[]){in[3], in[4], in[5]}, 3, pw[k][14]);
-    h[6] = doPerceptron((double[]){in[6], in[7], in[8]}, 3, pw[k][15]);
+    h[4] = doPerceptron((float[]){in[0], in[1], in[2]}, 3, pw[k][13]);
+    h[5] = doPerceptron((float[]){in[3], in[4], in[5]}, 3, pw[k][14]);
+    h[6] = doPerceptron((float[]){in[6], in[7], in[8]}, 3, pw[k][15]);
 
     //3x3 to 1x3
-    h[7] = doPerceptron((double[]){in[0], in[3], in[6]}, 3, pw[k][16]);
-    h[8] = doPerceptron((double[]){in[1], in[4], in[7]}, 3, pw[k][17]);
-    h[9] = doPerceptron((double[]){in[2], in[5], in[8]}, 3, pw[k][18]);
+    h[7] = doPerceptron((float[]){in[0], in[3], in[6]}, 3, pw[k][16]);
+    h[8] = doPerceptron((float[]){in[1], in[4], in[7]}, 3, pw[k][17]);
+    h[9] = doPerceptron((float[]){in[2], in[5], in[8]}, 3, pw[k][18]);
     
     //Final neuron
     return doPerceptron(h, outputs, pw[k][19]);
@@ -323,8 +301,8 @@ int main()
     
     while(1)
     {
-        //Loop every 10 ms (1,000 microsecond = 1 millisecond)
-        usleep(10000);
+        //Loop every 1 ms (1,000 microsecond = 1 millisecond)
+        usleep(1000);
 
         //Inputs / Keypress
         if(key_is_pressed(XK_Control_L) && key_is_pressed(XK_Alt_L))
@@ -363,6 +341,7 @@ int main()
             {
                 _probability = 0.7;
                 offset = 3;
+                printf("\aDESPERATION: OFF\n");
                 speakS("Confidence");
             }
 
@@ -370,6 +349,7 @@ int main()
             {
                 _probability = 0;
                 offset = 0;
+                printf("\aDESPERATION: ON\n");
                 speakS("Desperation");
             }
 
@@ -458,20 +438,20 @@ int main()
             for(int k = offset; k < 7; ++k)
             {
                 //Compute Per Pixel Neuron outputs
-                double p[9]={0};
+                float p[9]={0};
                 for(int i = 0; i < 9; i++)
                 {
                     XQueryColor(d, map, &c[i]);
 
-                    const double r = c[i].red / 65535;
-                    const double g = c[i].green / 65535;
-                    const double b = c[i].blue / 65535;
+                    const float r = c[i].red / 65535;
+                    const float g = c[i].green / 65535;
+                    const float b = c[i].blue / 65535;
 
-                    p[i] = doPerceptron((double[]){r, g, b}, 3, pw[k][i]);
+                    p[i] = doPerceptron((float[]){r, g, b}, 3, pw[k][i]);
                 }
 
                 //Query Deep Result
-                const double deep_result = doDeepResult(p, k);
+                const float deep_result = doDeepResult(p, k);
 
                 //If the neuron/perceptron says fire, fire !
                 if(deep_result > _probability)
