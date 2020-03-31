@@ -101,7 +101,7 @@ r_simpleMipMaps "1"
 r_railWidth "16"
 r_railCoreWidth "6"
 r_railSegmentLength "32"
-r_vertexLight 0
+r_vertexLight "0"
 cg_shadows "0"
 com_zoneMegs "24"
 com_hunkmegs "512"
