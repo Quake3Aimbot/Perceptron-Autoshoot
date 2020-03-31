@@ -11,6 +11,10 @@
 
     Tested using the ioQuake3 client.
     https://ioquake3.org/
+    
+    This is the only version that uses only the float
+    type; why? well the resolution of each pixel colour
+    fits perfectly within the quantization of a float.
 
 --------------------------------------------------
     Recommended Client Settings
