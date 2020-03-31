@@ -16,6 +16,10 @@
     type; why? well the resolution of each pixel colour
     fits perfectly within the quantization of a float.
 
+    If you only intend to play FFA and target the aqua
+    blue bones model, then this is the fastest and most
+    accurate version. Probably best compiled with clang.
+
 --------------------------------------------------
     Recommended Client Settings
 --------------------------------------------------
