@@ -250,7 +250,7 @@ double doPerceptron(double* in, const uint32_t n, double eo, double* w)
         ro += in[i] * w[i];
 
     //Activation Function
-    if(_nquality == 1){sigmoid(ro);} //Sigmoid function
+    if(_nquality == 1){ro = sigmoid(ro);} //Sigmoid function
     if(ro < 0){ro = 0;} //ReLU
 
 //~~ Teach perceptron
